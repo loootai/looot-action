@@ -1,0 +1,32 @@
+# Weekly Google snapshot for one keyword. Copy to .github/workflows/ in your repo and add the
+# repository secret LOOOT_TOKEN (Settings, Secrets and variables, Actions).
+name: weekly serp snapshot
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - id: serp
+        uses: loootai/looot-action@v0.1.0   # pin to a commit SHA in production
+        with:
+          operation-id: job:google.serp.organic
+          input-json: '{"query": "best crm for startups", "country": "us"}'
+          max-cost-usd: "0.05"
+          token: ${{ secrets.LOOOT_TOKEN }}
+
+      - name: Show the top three results
+        env:
+          RESULT: ${{ steps.serp.outputs.result }}
+        run: |
+          echo "$RESULT" | jq '[.. | objects | select(has("link")) ] | .[:3] | map({position, title, link})'
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: serp-snapshot
+          path: ${{ steps.serp.outputs.result-file }}

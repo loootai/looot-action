@@ -1,0 +1,28 @@
+# Verify one email address by hand. Run it from the Actions tab with an email as input.
+name: verify an email
+on:
+  workflow_dispatch:
+    inputs:
+      email:
+        description: Address to verify
+        required: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      # Build the JSON with jq so the typed value cannot break out of the string.
+      - id: payload
+        env:
+          EMAIL: ${{ inputs.email }}
+        run: |
+          echo "json=$(jq -cn --arg email "$EMAIL" '{email: $email}')" >> "$GITHUB_OUTPUT"
+
+      - id: verify
+        uses: loootai/looot-action@v0.1.0
+        with:
+          operation-id: job:people.email.verify
+          input-json: ${{ steps.payload.outputs.json }}
+          token: ${{ secrets.LOOOT_TOKEN }}
+
+      - run: echo "status=${{ steps.verify.outputs.status }} cost=${{ steps.verify.outputs.cost-usd }}"

@@ -1,0 +1,82 @@
+name: looot run
+description: Run one looot endpoint or job from a workflow and get the result as JSON. Pay per call from a prepaid balance. A failed call costs nothing.
+author: looot
+branding:
+  icon: search
+  color: blue
+inputs:
+  operation-id:
+    description: Endpoint id from the looot catalog (serper-search) or a job written as job:people.email.find.
+    required: true
+  input-json:
+    description: JSON object with the operation input, using the field names the endpoint documents.
+    required: false
+    default: "{}"
+  token:
+    description: looot agent token. Leave empty to read the LOOOT_TOKEN environment variable. Pass it from a repository secret, never as plain text.
+    required: false
+    default: ""
+  max-cost-usd:
+    description: Cap in USD for the whole fallback route of a job run. Empty means no extra cap.
+    required: false
+    default: ""
+  fallback:
+    description: "true, false or auto. auto turns fallback on for job: ids only. Fallback moves to the next provider of a job when one finds nothing."
+    required: false
+    default: auto
+  wait-seconds:
+    description: Seconds looot holds the request open for the result, 0 to 60.
+    required: false
+    default: "30"
+  timeout-seconds:
+    description: Total seconds to wait, including polling when the run is still going after wait-seconds.
+    required: false
+    default: "120"
+  idempotency-key:
+    description: Same key and same input never charges twice. Default is one key per workflow run and input, so a re-run of failed jobs does not pay twice and a new scheduled run does.
+    required: false
+    default: ""
+  fail-on-error:
+    description: Fail the step when the run does not complete.
+    required: false
+    default: "true"
+  base-url:
+    description: API base URL. Leave as is unless looot gave you another gateway.
+    required: false
+    default: https://api.looot.ai
+outputs:
+  result:
+    description: The run result as JSON (empty when it is larger than 900 KB; read result-file instead).
+    value: ${{ steps.run.outputs.result }}
+  run:
+    description: The whole run object as JSON, with status, result, actualCost and error (empty when larger than 900 KB).
+    value: ${{ steps.run.outputs.run }}
+  run-id:
+    description: The looot run id.
+    value: ${{ steps.run.outputs.run-id }}
+  status:
+    description: Run status, for example completed, failed or blocked.
+    value: ${{ steps.run.outputs.status }}
+  cost-usd:
+    description: What the run cost in USD.
+    value: ${{ steps.run.outputs.cost-usd }}
+  result-file:
+    description: Path of a file holding the full run JSON.
+    value: ${{ steps.run.outputs.result-file }}
+runs:
+  using: composite
+  steps:
+    - id: run
+      shell: bash
+      run: node "$GITHUB_ACTION_PATH/run.mjs"
+      env:
+        LOOOT_INPUT_OPERATION_ID: ${{ inputs.operation-id }}
+        LOOOT_INPUT_INPUT_JSON: ${{ inputs.input-json }}
+        LOOOT_INPUT_TOKEN: ${{ inputs.token }}
+        LOOOT_INPUT_MAX_COST_USD: ${{ inputs.max-cost-usd }}
+        LOOOT_INPUT_FALLBACK: ${{ inputs.fallback }}
+        LOOOT_INPUT_WAIT_SECONDS: ${{ inputs.wait-seconds }}
+        LOOOT_INPUT_TIMEOUT_SECONDS: ${{ inputs.timeout-seconds }}
+        LOOOT_INPUT_IDEMPOTENCY_KEY: ${{ inputs.idempotency-key }}
+        LOOOT_INPUT_FAIL_ON_ERROR: ${{ inputs.fail-on-error }}
+        LOOOT_INPUT_BASE_URL: ${{ inputs.base-url }}
