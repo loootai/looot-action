@@ -2,6 +2,16 @@
 
 A GitHub Action that runs one [looot](https://looot.ai) operation from a workflow and gives you the result as JSON. looot is one token and one prepaid balance for 2,500+ data API endpoints: work emails, company and people search, Google results, web pages, news. You pay per call, the price is known before the run, and a failed call costs nothing.
 
+## Install for agents
+
+```bash
+claude mcp add --transport http looot https://api.looot.ai/mcp
+```
+
+In a workflow: `uses: loootai/looot-action@v0.1.0`
+
+See also: [awesome-looot-use-cases](https://github.com/loootai/awesome-looot-use-cases) (copy-paste recipes) and [awesome-gtm](https://github.com/loootai/awesome-gtm) (open-source GTM tools).
+
 Typical uses: a weekly Google ranking snapshot, verifying an email list in CI, enriching a row when a file changes.
 
 ## Use
