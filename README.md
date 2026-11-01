@@ -4,7 +4,7 @@
 
 [![License](https://img.shields.io/github/license/loootai/looot-action)](LICENSE) [![Release](https://img.shields.io/github/v/release/loootai/looot-action)](https://github.com/loootai/looot-action/releases) [![Docs](https://img.shields.io/badge/docs-docs.looot.ai-12A06A)](https://docs.looot.ai)
 
-A GitHub Action that runs one [looot](https://looot.ai) operation from a workflow and gives you the result as JSON. looot is one token and one prepaid balance for 2,500+ data API endpoints: work emails, company and people search, Google results, web pages, news. You pay per call, the price is known before the run, and a failed call costs nothing.
+A GitHub Action that runs one [looot](https://looot.ai) operation from a workflow and gives you the result as JSON. looot is one token and one prepaid balance for 4,200+ data API endpoints: work emails, company and people search, Google results, web pages, news. You pay per call, the price is known before the run, and a failed call costs nothing.
 
 ## Install for agents
 

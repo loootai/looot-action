@@ -2,7 +2,7 @@
 
 > GitHub Action: run one looot operation (email find, SERP, enrichment) and get the result as JSON. Pay per call.
 
-looot is one key and one prepaid balance for 2,500+ data API endpoints from 90+ providers. The agent searches the catalog, sees the price before it runs, and pays per call.
+looot is one key and one prepaid balance for 4,200+ data API endpoints from 300+ providers. The agent searches the catalog, sees the price before it runs, and pays per call.
 
 ## Install
 
